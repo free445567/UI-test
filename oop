@@ -1,0 +1,122 @@
+-- Example Usage of Modern UI Library
+-- Load the library first, then use this code
+
+local Library = loadstring(game:HttpGet("YOUR_RAW_GITHUB_LINK_HERE"))()
+
+-- Create Window (600x400)
+local Window = Library:CreateWindow("Venom X")
+
+-- Create Tabs
+local CombatTab = Window:CreateTab("Combat")
+local PlayerTab = Window:CreateTab("Local Player")
+local ObjectTab = Window:CreateTab("Object Grab")
+local HomeTab = Window:CreateTab("Home")
+
+-- Combat Tab
+CombatTab:CreateSection("Combat Settings")
+
+CombatTab:CreateSlider("Strength Power", 0, 10000, 8405, function(value)
+    print("Strength Power:", value)
+    -- Your code here
+end)
+
+CombatTab:CreateToggle("Strength", true, function(state)
+    print("Strength:", state)
+    -- Your code here
+end)
+
+CombatTab:CreateSection("Grab Stuff")
+
+CombatTab:CreateToggle("Poison Grab", true, function(state)
+    print("Poison Grab:", state)
+    -- Your code here
+end)
+
+CombatTab:CreateToggle("Radioactive Grab", true, function(state)
+    print("Radioactive Grab:", state)
+    -- Your code here
+end)
+
+CombatTab:CreateToggle("Fire Grab", true, function(state)
+    print("Fire Grab:", state)
+    -- Your code here
+end)
+
+CombatTab:CreateToggle("Noclip Grab", true, function(state)
+    print("Noclip Grab:", state)
+    -- Your code here
+end)
+
+-- Local Player Tab
+PlayerTab:CreateSection("Movement")
+
+PlayerTab:CreateSlider("Walk Speed", 16, 200, 16, function(value)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
+end)
+
+PlayerTab:CreateSlider("Jump Power", 50, 500, 50, function(value)
+    game.Players.LocalPlayer.Character.Humanoid.JumpPower = value
+end)
+
+PlayerTab:CreateToggle("Infinite Jump", false, function(state)
+    print("Infinite Jump:", state)
+    -- Your code here
+end)
+
+PlayerTab:CreateSection("Character")
+
+PlayerTab:CreateButton("Reset Character", function()
+    game.Players.LocalPlayer.Character.Humanoid.Health = 0
+end)
+
+PlayerTab:CreateButton("God Mode", function()
+    print("God Mode activated!")
+    -- Your code here
+end)
+
+-- Object Tab
+ObjectTab:CreateSection("Object Settings")
+
+ObjectTab:CreateDropdown("Grab Mode", {"Normal", "Advanced", "Speed", "Power"}, "Normal", function(selected)
+    print("Grab Mode:", selected)
+    -- Your code here
+end)
+
+ObjectTab:CreateToggle("Auto Grab", false, function(state)
+    print("Auto Grab:", state)
+    -- Your code here
+end)
+
+ObjectTab:CreateSlider("Grab Range", 5, 100, 20, function(value)
+    print("Grab Range:", value)
+    -- Your code here
+end)
+
+-- Home Tab
+HomeTab:CreateSection("Welcome")
+
+HomeTab:CreateButton("Discord Server", function()
+    setclipboard("discord.gg/example")
+    Library:CreateNotification("Copied!", "Discord link copied to clipboard", 3)
+end)
+
+HomeTab:CreateButton("Destroy GUI", function()
+    Library:CreateNotification("Goodbye!", "UI will be destroyed in 2 seconds", 2)
+    wait(2)
+    game:GetService("CoreGui"):FindFirstChild("ModernUILibrary"):Destroy()
+end)
+
+HomeTab:CreateSection("Credits")
+
+local CreditsLabel = Instance.new("TextLabel")
+CreditsLabel.Size = UDim2.new(1, 0, 0, 60)
+CreditsLabel.BackgroundTransparency = 1
+CreditsLabel.Text = "Created by: Your Name\nVersion: 1.0.0\nDate: 2025"
+CreditsLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+CreditsLabel.TextSize = 12
+CreditsLabel.Font = Enum.Font.Gotham
+CreditsLabel.TextWrapped = true
+CreditsLabel.Parent = HomeTab.Content
+
+-- Show welcome notification
+Library:CreateNotification("Welcome!", "Thanks for using Venom X", 4)
