@@ -1,5 +1,6 @@
 -- Modern UI Library for Roblox
 -- Created with love and organization
+-- Modified: Differentiated colors for Tab Buttons vs Tab Content
 
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -12,8 +13,12 @@ Library.__index = Library
 local Colors = {
     Background = Color3.fromRGB(30, 30, 35),
     Topbar = Color3.fromRGB(25, 25, 30),
-    Tab = Color3.fromRGB(40, 40, 45),
-    TabActive = Color3.fromRGB(50, 50, 58),
+    
+    -- MODIFICADO: Cores diferenciadas para tabs e conteúdo
+    TabButton = Color3.fromRGB(35, 35, 40),        -- Botões das tabs (mais escuro)
+    TabButtonActive = Color3.fromRGB(45, 45, 52),  -- Botão da tab ativa
+    TabContent = Color3.fromRGB(42, 42, 48),       -- Fundo do conteúdo das tabs (mais claro que os botões)
+    
     Element = Color3.fromRGB(45, 45, 52),
     Accent = Color3.fromRGB(88, 101, 242),
     Text = Color3.fromRGB(255, 255, 255),
@@ -311,26 +316,48 @@ function Library:CreateWindow(title)
     -- Make window draggable
     MakeDraggable(MainFrame, Topbar)
     
-    -- Tab Container
+    -- MODIFICADO: Tab Container com cor diferenciada
     local TabContainer = Instance.new("Frame")
     TabContainer.Name = "TabContainer"
     TabContainer.Size = UDim2.new(0, 150, 1, -50)
     TabContainer.Position = UDim2.new(0, 5, 0, 45)
-    TabContainer.BackgroundTransparency = 1
+    TabContainer.BackgroundColor3 = Colors.TabButton  -- Fundo para os botões das tabs
+    TabContainer.BackgroundTransparency = 0.3
+    TabContainer.BorderSizePixel = 0
     TabContainer.Parent = MainFrame
+    
+    -- Adicionar corner ao TabContainer
+    local TabContainerCorner = Instance.new("UICorner")
+    TabContainerCorner.CornerRadius = UDim.new(0, 8)
+    TabContainerCorner.Parent = TabContainer
     
     local TabLayout = Instance.new("UIListLayout")
     TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
     TabLayout.Padding = UDim.new(0, 5)
     TabLayout.Parent = TabContainer
     
-    -- Content Container
+    -- Adicionar padding ao TabContainer
+    local TabContainerPadding = Instance.new("UIPadding")
+    TabContainerPadding.PaddingLeft = UDim.new(0, 5)
+    TabContainerPadding.PaddingRight = UDim.new(0, 5)
+    TabContainerPadding.PaddingTop = UDim.new(0, 5)
+    TabContainerPadding.PaddingBottom = UDim.new(0, 5)
+    TabContainerPadding.Parent = TabContainer
+    
+    -- MODIFICADO: Content Container com cor diferenciada
     local ContentContainer = Instance.new("Frame")
     ContentContainer.Name = "ContentContainer"
     ContentContainer.Size = UDim2.new(1, -165, 1, -50)
     ContentContainer.Position = UDim2.new(0, 160, 0, 45)
-    ContentContainer.BackgroundTransparency = 1
+    ContentContainer.BackgroundColor3 = Colors.TabContent  -- Fundo para o conteúdo das tabs
+    ContentContainer.BackgroundTransparency = 0
+    ContentContainer.BorderSizePixel = 0
     ContentContainer.Parent = MainFrame
+    
+    -- Adicionar corner ao ContentContainer
+    local ContentContainerCorner = Instance.new("UICorner")
+    ContentContainerCorner.CornerRadius = UDim.new(0, 8)
+    ContentContainerCorner.Parent = ContentContainer
     
     -- Icon Library (Lucide Icons via Roblox Asset IDs)
     local Icons = {
@@ -353,12 +380,12 @@ function Library:CreateWindow(title)
         
         icon = icon or "home" -- default icon
         
-        -- Tab Button
+        -- MODIFICADO: Tab Button com cor apropriada
         local TabButton = Instance.new("TextButton")
         TabButton.Name = name
-        TabButton.Size = UDim2.new(1, 0, 0, 50)
-        TabButton.BackgroundColor3 = Colors.Tab
-        TabButton.BackgroundTransparency = 1 -- 100% transparent
+        TabButton.Size = UDim2.new(1, -10, 0, 50)
+        TabButton.BackgroundColor3 = Colors.TabButton
+        TabButton.BackgroundTransparency = 0.5
         TabButton.BorderSizePixel = 0
         TabButton.Text = ""
         TabButton.AutoButtonColor = false
@@ -422,13 +449,15 @@ function Library:CreateWindow(title)
         -- Tab Button Click
         TabButton.MouseButton1Click:Connect(function()
             for _, tab in pairs(Window.Tabs) do
-                tab.Button.BackgroundTransparency = 1
+                tab.Button.BackgroundTransparency = 0.5
+                tab.Button.BackgroundColor3 = Colors.TabButton
                 tab.Icon.ImageColor3 = Colors.TextDark
                 tab.Label.TextColor3 = Colors.TextDark
                 tab.Content.Visible = false
             end
             
-            TabButton.BackgroundTransparency = 0.95
+            TabButton.BackgroundTransparency = 0
+            TabButton.BackgroundColor3 = Colors.TabButtonActive
             TabIcon.ImageColor3 = Colors.Accent
             TabLabel.TextColor3 = Colors.Text
             TabContent.Visible = true
@@ -439,7 +468,8 @@ function Library:CreateWindow(title)
         
         -- Auto select first tab
         if #Window.Tabs == 0 then
-            TabButton.BackgroundTransparency = 0.95
+            TabButton.BackgroundTransparency = 0
+            TabButton.BackgroundColor3 = Colors.TabButtonActive
             TabIcon.ImageColor3 = Colors.Accent
             TabLabel.TextColor3 = Colors.Text
             TabContent.Visible = true
@@ -494,7 +524,7 @@ function Library:CreateWindow(title)
             Button.Parent = ButtonFrame
             
             Button.MouseEnter:Connect(function()
-                Tween(ButtonFrame, {BackgroundColor3 = Colors.TabActive})
+                Tween(ButtonFrame, {BackgroundColor3 = Colors.TabButtonActive})
             end)
             
             Button.MouseLeave:Connect(function()
@@ -749,7 +779,7 @@ function Library:CreateWindow(title)
                 local OptionButton = Instance.new("TextButton")
                 OptionButton.Name = option
                 OptionButton.Size = UDim2.new(1, 0, 0, 30)
-                OptionButton.BackgroundColor3 = Colors.Tab
+                OptionButton.BackgroundColor3 = Colors.TabButton
                 OptionButton.BorderSizePixel = 0
                 OptionButton.Text = option
                 OptionButton.TextColor3 = Colors.TextDark
@@ -758,11 +788,11 @@ function Library:CreateWindow(title)
                 OptionButton.Parent = OptionsContainer
                 
                 OptionButton.MouseEnter:Connect(function()
-                    OptionButton.BackgroundColor3 = Colors.TabActive
+                    OptionButton.BackgroundColor3 = Colors.TabButtonActive
                 end)
                 
                 OptionButton.MouseLeave:Connect(function()
-                    OptionButton.BackgroundColor3 = Colors.Tab
+                    OptionButton.BackgroundColor3 = Colors.TabButton
                 end)
                 
                 OptionButton.MouseButton1Click:Connect(function()
