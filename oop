@@ -332,27 +332,65 @@ function Library:CreateWindow(title)
     ContentContainer.BackgroundTransparency = 1
     ContentContainer.Parent = MainFrame
     
+    -- Icon Library (Lucide Icons via Roblox Asset IDs)
+    local Icons = {
+        ["home"] = "rbxassetid://10723434711",
+        ["combat"] = "rbxassetid://10723407389", -- swords
+        ["player"] = "rbxassetid://10734949856", -- user
+        ["grab"] = "rbxassetid://10723424838", -- hand
+        ["info"] = "rbxassetid://10723434711", -- info circle
+        ["settings"] = "rbxassetid://10734950309", -- settings
+        ["activity"] = "rbxassetid://10723374389", -- activity
+        ["dumbbell"] = "rbxassetid://10723407389", -- weight/dumbbell
+        ["target"] = "rbxassetid://10723424838", -- target
+        ["shield"] = "rbxassetid://10723391604", -- shield
+    }
+    
     -- Create Tab Function
-    function Window:CreateTab(name)
+    function Window:CreateTab(name, icon)
         local Tab = {}
         Tab.Elements = {}
+        
+        icon = icon or "home" -- default icon
         
         -- Tab Button
         local TabButton = Instance.new("TextButton")
         TabButton.Name = name
-        TabButton.Size = UDim2.new(1, 0, 0, 35)
+        TabButton.Size = UDim2.new(1, 0, 0, 50)
         TabButton.BackgroundColor3 = Colors.Tab
+        TabButton.BackgroundTransparency = 1 -- 100% transparent
         TabButton.BorderSizePixel = 0
-        TabButton.Text = name
-        TabButton.TextColor3 = Colors.TextDark
-        TabButton.TextSize = 13
-        TabButton.Font = Enum.Font.GothamMedium
+        TabButton.Text = ""
         TabButton.AutoButtonColor = false
         TabButton.Parent = TabContainer
         
         local TabCorner = Instance.new("UICorner")
-        TabCorner.CornerRadius = UDim.new(0, 6)
+        TabCorner.CornerRadius = UDim.new(0, 8)
         TabCorner.Parent = TabButton
+        
+        -- Icon
+        local TabIcon = Instance.new("ImageLabel")
+        TabIcon.Name = "Icon"
+        TabIcon.Size = UDim2.new(0, 24, 0, 24)
+        TabIcon.Position = UDim2.new(0.5, -12, 0, 8)
+        TabIcon.BackgroundTransparency = 1
+        TabIcon.Image = Icons[icon] or Icons["home"]
+        TabIcon.ImageColor3 = Colors.TextDark
+        TabIcon.ScaleType = Enum.ScaleType.Fit
+        TabIcon.Parent = TabButton
+        
+        -- Label
+        local TabLabel = Instance.new("TextLabel")
+        TabLabel.Name = "Label"
+        TabLabel.Size = UDim2.new(1, -10, 0, 16)
+        TabLabel.Position = UDim2.new(0, 5, 1, -18)
+        TabLabel.BackgroundTransparency = 1
+        TabLabel.Text = name
+        TabLabel.TextColor3 = Colors.TextDark
+        TabLabel.TextSize = 10
+        TabLabel.Font = Enum.Font.GothamMedium
+        TabLabel.TextTruncate = Enum.TextTruncate.AtEnd
+        TabLabel.Parent = TabButton
         
         -- Tab Content
         local TabContent = Instance.new("ScrollingFrame")
@@ -384,13 +422,15 @@ function Library:CreateWindow(title)
         -- Tab Button Click
         TabButton.MouseButton1Click:Connect(function()
             for _, tab in pairs(Window.Tabs) do
-                tab.Button.BackgroundColor3 = Colors.Tab
-                tab.Button.TextColor3 = Colors.TextDark
+                tab.Button.BackgroundTransparency = 1
+                tab.Icon.ImageColor3 = Colors.TextDark
+                tab.Label.TextColor3 = Colors.TextDark
                 tab.Content.Visible = false
             end
             
-            TabButton.BackgroundColor3 = Colors.TabActive
-            TabButton.TextColor3 = Colors.Text
+            TabButton.BackgroundTransparency = 0.95
+            TabIcon.ImageColor3 = Colors.Accent
+            TabLabel.TextColor3 = Colors.Text
             TabContent.Visible = true
             Window.CurrentTab = Tab
             
@@ -399,13 +439,16 @@ function Library:CreateWindow(title)
         
         -- Auto select first tab
         if #Window.Tabs == 0 then
-            TabButton.BackgroundColor3 = Colors.TabActive
-            TabButton.TextColor3 = Colors.Text
+            TabButton.BackgroundTransparency = 0.95
+            TabIcon.ImageColor3 = Colors.Accent
+            TabLabel.TextColor3 = Colors.Text
             TabContent.Visible = true
             Window.CurrentTab = Tab
         end
         
         Tab.Button = TabButton
+        Tab.Icon = TabIcon
+        Tab.Label = TabLabel
         Tab.Content = TabContent
         table.insert(Window.Tabs, Tab)
         
